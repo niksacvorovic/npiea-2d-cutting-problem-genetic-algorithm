@@ -1,10 +1,9 @@
-class Rectangle(object):
+class Piece(object):
     def __init__(self, x, y, width, height):
-        self.x = x
-        self.y = y
         self.width = width
         self.height = height
 
+# TODO: rename to gen
 class Permutation(object):
     def __init__(self, board, rectangles):
         self.rectangles = rectangles
@@ -17,7 +16,8 @@ class Permutation(object):
             covered += rec.width * rec.height
         self.coverage = covered / area
 
+# TODO: rename to chromosome
 class Gene(object):
     def __init__(self, perm_dict, array):
-        self.prem_dict = perm_dict
+        self.perm_dict = perm_dict
         self.array = array
