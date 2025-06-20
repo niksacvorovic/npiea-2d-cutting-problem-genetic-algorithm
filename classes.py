@@ -1,14 +1,21 @@
 class Piece(object):
-    def __init__(self, x, y, width, height):
+    def __init__(self, id, width, height):
+        self.id = id
         self.width = width
         self.height = height
 
-# TODO: rename to gen
-class Permutation(object):
-    def __init__(self, board, rectangles):
-        self.rectangles = rectangles
+class Gene(object):
+    def __init__(self, board, pieces):
+        # Jedan element liste pieces je torka koja sadrži x i y koordinatu pozicije i Piece objekat
+        self.pieces = pieces
         self.board = board
         self.coverage = None
+        self.count = {}
+        for p in pieces:
+            if p[2].id not in self.count:
+                self.count[p[2].id] = 1
+            else:
+                self.count[p[2].id] += 1
     def calculate_coverage(self):
         area = self.board.width * self.board.height
         covered = 0
@@ -16,8 +23,6 @@ class Permutation(object):
             covered += rec.width * rec.height
         self.coverage = covered / area
 
-# TODO: rename to chromosome
-class Gene(object):
-    def __init__(self, perm_dict, array):
-        self.perm_dict = perm_dict
+class Chromosome(object):
+    def __init__(self, array):
         self.array = array

@@ -1,5 +1,45 @@
-def crossover():
-    pass
+from classes import Chromosome
+from random import randrange
+
+
+def one_point_crossover(first, second):
+    index = randrange(0, min(len(first.pieces), len(second.pieces)))
+    first_child = Chromosome(first.array[:index] + second.array[index:])
+    second_child = Chromosome(second.array[:index] + first.array[index:])
+    return first_child, second_child
+
+def two_point_crossover(first, second):
+    first_index = randrange(0, min(len(first.pieces), len(second.pieces)))
+    second_index = randrange(0, min(len(first.pieces), len(second.pieces)))
+    while first_index == second_index:
+        second_index = randrange(0, min(len(first.pieces), len(second.pieces)))
+    a = min(first_index, second_index)
+    b = max(first_index, second_index)
+    first_child = Chromosome(first.array[:a] + second.array[a:b] + first.array[b:])
+    second_child = Chromosome(second.array[:a] + first.array[a:b] + second.array[b:])
+    return first_child, second_child
+
+def check_chromosomes(constraints, chromosome):
+    count = {}
+    for key in constraints:
+        count[key] = 0
+    for gene in chromosome.array:
+        for key in gene.count:
+            count[key] += gene.count[key]
+    excess = {}
+    # Ova promenljiva prati da li ostatak postoji, tj. da li su sve vrednosti rečniku ostataka 0
+    noexcess = True
+    for key in constraints:
+        excess[key] = count[key] - constraints[key]
+        noexcess = excess[key] == 0
+        if excess[key] < 0:
+            return False
+    if noexcess:
+        return True
+    for gene in chromosome:
+        if excess == gene.count:
+            chromosome.array.pop(gene)
+            return True
 
 def mutation():
     pass

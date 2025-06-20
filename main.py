@@ -38,10 +38,10 @@ def main():
 
 # METHDOS
 
-# crossoveer (prima 2 chromosoma, vraca 2 chromosoma)                                   NIKSA
-# check_chromosome (prima chromosome, provera uslove + skrati broj gena ako je moguce)  NIKSA
-# plotovanje resenja                                                                    NIKSA
-# fitness_function  MOZDA NAM NE TREBA                                                  NIKSA
+# crossoveer (prima 2 chromosoma, vraca 2 chromosoma) - urađeno                                     NIKSA
+# check_chromosome (prima chromosome, provera uslove + skrati broj gena ako je moguce) - urađeno    NIKSA
+# plotovanje resenja - urađeno                                                                      NIKSA
+# fitness_function  MOZDA NAM NE TREBA                                                              NIKSA
 
 
 # mutacija (prima chromosomm, vraca mutirani chromosome)                 VEDRAN
