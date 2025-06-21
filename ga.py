@@ -44,6 +44,22 @@ def check_chromosomes(constraints, chromosome):
 def mutation():
     pass
 
+def ga(population):
+    '''
+    :param population: initial population (list of chromosomes)
+    :return:
+    '''
+    pass
+
+
+def create_init_population():
+    '''
+    :return: list of Chromosome that represent initial population
+    '''
+
+
+
+
 # Pretpostavljamo da su klase Piece i Chromosome definisane kao u prethodnom odgovoru
 # (sa effective_width, effective_height, i listom pieces unutar Chromosome)
 

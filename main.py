@@ -1,6 +1,39 @@
-def main():
-    pass
+from ga import *
+from graphics import *
 
+FILE_NAME = "./input/in1.txt"
+stock_width = 0
+stock_height = 0
+pieces = []
+piece_counts = {}
+
+def input_data():
+    '''
+    inputs test case from given file path FILE_NAME.
+    :return:
+    '''
+    with open(FILE_NAME, 'r') as f:
+        STOCK_HEIGHT, STOCK_WIDTH = map(int, f.readline().split())
+
+        # Read the number of piece types
+        q = int(f.readline())
+        id = 0
+        # Read each piece's data for q lines
+        for _ in range(q):
+            p_width, p_height, p_count = map(int, f.readline().split())
+            pieces.append((p_width, p_height, id))
+            piece_counts[id] = p_count
+            id+=1
+
+
+def main():
+    input_data()
+    population = create_init_population()
+    for chromosome in population:
+        visualise(chromosome)
+    pass
+    ga(population)
+    visualise(population[0])
 
 # ALGORITAM
 
@@ -45,7 +78,7 @@ def main():
 
 
 # mutacija (prima chromosomm, vraca mutirani chromosome)                 VEDRAN
-# input piecova + velicina table                                         VEDRAN
+# input piecova + velicina table                               uradjeno  VEDRAN
 # create_init_population                                                 VEDRAN
 # natural_selection (80-20, nesto, treba uzimati i malo losih hromozoma) VEDRAN
 
