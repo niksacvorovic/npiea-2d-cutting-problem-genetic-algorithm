@@ -1,6 +1,7 @@
-from classes import Chromosome
-from random import randrange
+from classes import *
+from random import *
 
+POPULATION_SIZE = 50
 
 def one_point_crossover(first, second):
     index = randrange(0, min(len(first.pieces), len(second.pieces)))
@@ -52,11 +53,47 @@ def ga(population):
     pass
 
 
-def create_init_population():
-    '''
-    :return: list of Chromosome that represent initial population
+def make_chromosome(array):
     '''
 
+    :param array: array of all pieces
+    :return: chromosome
+    '''
+    genes = []
+    for piece in array:
+        list_pieces = []
+
+        genes.append(Gene(list_pieces))
+
+
+    return Chromosome(genes)
+
+
+def create_init_population(pieces, piece_counts):
+    '''
+    :param pieces: List of piece objects
+    :param piece_counts: dictionary representing pair id-count
+    :return: list of Chromosome that represent initial population
+    '''
+    print("Creating initial population...")
+    population = []
+    all_pieces = []
+    for p in pieces:
+        for i in range(piece_counts[p.id]):
+            all_pieces.append(p)
+
+
+
+    # Loop to create a new chromosome from given permutation of all_pieces
+    for _ in range(POPULATION_SIZE):
+        # Create a new chromosome by shuffling a copy of the original pieces list.
+        # It's crucial to copy the list so the original list and other
+        # chromosomes are not affected by the shuffle.
+        shuffled_pieces = pieces[:]  # Create a shallow copy
+        shuffle(shuffled_pieces)
+        population.append(make_chromosome(shuffled_pieces))
+
+    return population
 
 
 

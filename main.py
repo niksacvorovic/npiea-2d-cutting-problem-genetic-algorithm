@@ -21,17 +21,23 @@ def input_data():
         # Read each piece's data for q lines
         for _ in range(q):
             p_width, p_height, p_count = map(int, f.readline().split())
-            pieces.append((p_width, p_height, id))
+            pieces.append(Piece(p_width, p_height, id))
             piece_counts[id] = p_count
             id+=1
 
 
 def main():
+    print("Inputing data...")
     input_data()
-    population = create_init_population()
+
+    print("Generating population...")
+
+    population = create_init_population(pieces, piece_counts)
+
+    pass
     for chromosome in population:
         visualise(chromosome)
-    pass
+
     ga(population)
     visualise(population[0])
 
