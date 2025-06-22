@@ -1,7 +1,7 @@
 from classes import *
 from random import *
 
-POPULATION_SIZE = 2
+POPULATION_SIZE = 5
 
 
 def one_point_crossover(first, second):
@@ -45,9 +45,47 @@ def check_chromosomes(constraints, chromosome):
             chromosome.array.pop(gene)
             return True
 
+# mislim da moze da ima 4 "dela"
+# 1) promena permutacije (bice drugaciji raspored piecova po tabli)
+# 2) swap izmedju 2 gena
+# 3) kao 2), ali u jednom smeru samo. Kao prebacivanje iz jednog gena u drugi
+# 4) promena rotacije pieca
 
-def mutation():
+# ja sam mozda cak kontao da se na jednom genu, odradi x (2, 3, 10, nebitno) mutacije koje random izaberem od ovih 4.
+def change_rotation(chromosome):
     pass
+
+
+def swap_2_genes(chromosome):
+    pass
+
+
+def transfer_1_gene(chromosome):
+    pass
+
+def change_permutation(chromosome):
+    pass
+
+
+def mutation(chromosome):
+    ''''
+    Function chooses 2 genes in one chromosome. Then swaps random chosen piece from them.
+    Reorder the pieces in gene
+
+    :param chromosome: chromosome to mutate
+    :return: mutated chromosome
+    '''
+
+    # this is best possible scenario, no mutation needed
+    if len(chromosome.array) <= 1:
+        return
+
+    # Picking 2 genes for mutation
+    gene_id2 = gene_id1 = randint(0, len(chromosome.array) - 1)
+    while gene_id1 == gene_id2:
+        gene_id2 = randint(0, len(chromosome.array) - 1)
+    g1 = chromosome.array[gene_id1]
+    g2 = chromosome.array[gene_id2]
 
 
 def ga(population):
@@ -56,7 +94,8 @@ def ga(population):
     :return:
     '''
     pass
-
+    pass
+    pass
 
 def place_piece_on_position(board, r, c, width, height):
     for i in range(height):
@@ -107,10 +146,7 @@ def make_chromosome_from_all_pieces(array, stock_width, stock_height):
     tuple_list = []
     board = [[False for _ in range(stock_width)] for _ in range(stock_height)]
 
-
-
     for piece in array:
-        piece.print()
         rotation = randint(0, 1)
         r, c = place_piece_on_board(board, piece, rotation)
 
@@ -123,12 +159,14 @@ def make_chromosome_from_all_pieces(array, stock_width, stock_height):
             tuple_list = []
             board = [[False for _ in range(stock_width)] for _ in range(stock_height)]
             x = y = 0
+            r = c = 0
 
         tuple_list.append((x, y, rotation, piece))
 
         width = piece.height if rotation else piece.width
         height = piece.width if rotation else piece.height
         place_piece_on_position(board, r, c, width, height)
+
 
     genes.append(Gene(tuple_list))
 

@@ -38,50 +38,30 @@ def main():
     population = create_init_population(pieces, piece_counts, stock_width, stock_height)
     print("Init population done!")
 
-    for chromosome in population:
-        chromosome.print()
-
-    #for chromosome in population:
-       # visualise(chromosome)
-
     # ga(population)
 
-    visualise(population[0], stock_width, stock_height)
-    visualise(population[1], stock_width, stock_height)
+    for i in range(len(population)):
+        visualise(population[i], stock_width, stock_height)
 
-# ALGORITAM
+    #mutation(population[0])
 
-# create init population
+    #visualise(population[0], stock_width, stock_height)
 
-# ga:
-#   do while (nesto)
-#       crossover
-#       provera dobijenih childova
-#       ako moze, smanjimo broj gena u jednom chromosomu
-#
-#    prirodna selekcija?? bira se pola najboljih
-#    nad dobijenom novom populacijom, primeniti mutaciju
+'''
+The GA Main Loop Begins Here:
 
-# chromosomi sa najmanjom duzinom su najbolja resenja
+    Sta cemo od selekcije... tournament, natural, roulette wheel??
+    
+a. Selection: This is where you do it. After scoring everyone in the current population, you use a selection method to pick individuals for a "mating pool." The size of this mating pool is typically the same as your population size. Fitter individuals will be selected more often.
 
+b. Crossover (Breeding): Pick parents from the mating pool (e.g., two at a time) and apply your crossover function to them to create one or more "offspring." Repeat until you have a new population of children.
 
+c. Mutation: Apply your mutation function to the children in the new population with a certain small probability. This introduces new genetic material.
 
+d. Create New Generation: The collection of mutated offspring now becomes the new population for the next cycle.
 
-# CLASSES
-
-# id, x, y, rot
-
-# gene (predstavlja jednu tablu, i id-eve piecova na njoj + rotacija)
-# sadrzi kolko kojeg imam
-
-# chromosome (predstavlja niz gena (tabli))
-# piece (width, height, id)
-
-# gui klasa (matplot lib, sta god)
-# treba uraditi input (iz fajla, iz konzole + meni???)
-
-
-
+e. Termination Check: Check if you have reached a termination condition (e.g., max number of generations, or fitness has stopped improving). If not, loop back to Step 2: Fitness Evaluation with your new population.
+'''
 
 # METHDOS
 
@@ -93,7 +73,7 @@ def main():
 
 # mutacija (prima chromosomm, vraca mutirani chromosome)                 VEDRAN
 # input piecova + velicina table                               uradjeno  VEDRAN
-# create_init_population                                                 VEDRAN
+# create_init_population                                       uradjeno  VEDRAN
 # natural_selection (80-20, nesto, treba uzimati i malo losih hromozoma) VEDRAN
 
 if __name__ == "__main__":
