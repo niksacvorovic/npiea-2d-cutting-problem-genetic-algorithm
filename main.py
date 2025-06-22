@@ -12,8 +12,9 @@ def input_data():
     inputs test case from given file path FILE_NAME.
     :return:
     '''
+    global pieces, piece_counts, stock_width, stock_height
     with open(FILE_NAME, 'r') as f:
-        STOCK_HEIGHT, STOCK_WIDTH = map(int, f.readline().split())
+        stock_height, stock_width = map(int, f.readline().split())
 
         # Read the number of piece types
         q = int(f.readline())
@@ -31,15 +32,20 @@ def main():
     input_data()
 
     print("Generating population...")
+    print("stock_width:", stock_width, " stock_height:", stock_height)
 
-    population = create_init_population(pieces, piece_counts)
+    population = create_init_population(pieces, piece_counts, stock_width, stock_height)
+    print("Init population done!")
 
-    pass
     for chromosome in population:
-        visualise(chromosome)
+        chromosome.print()
 
-    ga(population)
-    visualise(population[0])
+    #for chromosome in population:
+       # visualise(chromosome)
+
+    # ga(population)
+
+    visualise(population[0], stock_width, stock_height)
 
 # ALGORITAM
 
@@ -87,9 +93,6 @@ def main():
 # input piecova + velicina table                               uradjeno  VEDRAN
 # create_init_population                                                 VEDRAN
 # natural_selection (80-20, nesto, treba uzimati i malo losih hromozoma) VEDRAN
-
-
-
 
 if __name__ == "__main__":
     main()

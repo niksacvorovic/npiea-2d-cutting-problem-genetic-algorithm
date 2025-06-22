@@ -1,9 +1,11 @@
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from matplotlib.widgets import Button
-from classes import Chromosome, Gene, Piece
+import classes
 
-def visualise(chromosome):
+
+
+def visualise(chromosome, stock_width, stock_height):
     fig, ax = plt.subplots()
     colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k']
     plt.subplots_adjust(bottom=0.2)
@@ -12,9 +14,15 @@ def visualise(chromosome):
     index = 0
 
     def plot_current(index):
-        ax.set(xlim=chromosome.array[index].board.width, ylim=chromosome.array[index].board.width)
+        ax.set(xlim=stock_width, ylim=stock_height)
         for (i, rec) in enumerate(chromosome.array[index].pieces):
-            patch = mpatches.Rectangle((rec[0], rec[1]), rec[2].width, rec[2].height)
+            width = rec[3].width
+            height = rec[3].height
+            # if rec[2] == 1, rotate piece by 90 degree
+            if rec[2]:
+                height, width = width, height
+
+            patch = mpatches.Rectangle((rec[0], rec[1]), width, height)
             patch.set_color(colors[i % len(colors)])
             ax.add_patch(patch)
     
