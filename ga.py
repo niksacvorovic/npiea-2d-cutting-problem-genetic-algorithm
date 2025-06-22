@@ -1,7 +1,7 @@
 from classes import *
 from random import *
 
-POPULATION_SIZE = 1
+POPULATION_SIZE = 2
 
 
 def one_point_crossover(first, second):

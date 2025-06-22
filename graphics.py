@@ -1,64 +1,63 @@
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
-from matplotlib.widgets import Button
-import classes
-
-
+import math
 
 def visualise(chromosome, stock_width, stock_height):
-    fig, ax = plt.subplots()
-    colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k']
-    plt.subplots_adjust(bottom=0.2)
-    axprev = plt.axes([0.3, 0.05, 0.15, 0.075])  # [left, bottom, width, height]
-    axnext = plt.axes([0.55, 0.05, 0.15, 0.075])
-    index = 0
+    """
+    Plots all genes (boards) from a chromosome in a single figure using a grid of subplots.
+    """
+    num_genes = len(chromosome.array)
+    if num_genes == 0:
+        print("Chromosome is empty, nothing to display.")
+        return
 
-    def plot_current(index):
-        ax.set(xlim=stock_width, ylim=stock_height)
-        for (i, rec) in enumerate(chromosome.array[index].pieces):
-            width = rec[3].width
-            height = rec[3].height
-            # if rec[2] == 1, rotate piece by 90 degree
-            if rec[2]:
+    # Determine the grid size for the subplots (e.g., 2x2, 3x1, etc.)
+    cols = int(math.ceil(math.sqrt(num_genes)))
+    rows = int(math.ceil(num_genes / cols))
+
+    # Create a figure and a set of subplots
+    # figsize can be adjusted to make the overall window larger
+    fig, axes = plt.subplots(rows, cols, figsize=(cols * 5, rows * 5))
+
+    # If there's only one plot, axes is not an array, so make it one
+    if num_genes == 1:
+        axes = [axes]
+
+    # Flatten the axes array to make it easy to iterate over
+    axes = axes.flatten()
+
+    colors = ['#4E79A7', '#F28E2B', '#E15759', '#76B7B2', '#59A14F', '#EDC948', '#B07AA1']
+
+    # Loop through each gene and its corresponding subplot axis
+    for i, gene in enumerate(chromosome.array):
+        ax = axes[i]
+        ax.set_title(f"Gen {i + 1}")
+        ax.set_xlim(0, stock_width)
+        ax.set_ylim(0, stock_height)
+        ax.set_aspect('equal', adjustable='box')
+
+        # Plot all pieces for the current gene
+        for rec in gene.pieces:
+            # rec is (x, y, rotation, Piece_object)
+            x_pos, y_pos, rotation, piece_obj = rec
+
+            width = piece_obj.width
+            height = piece_obj.height
+
+            if rotation == 1:
                 height, width = width, height
 
-            patch = mpatches.Rectangle((rec[0], rec[1]), width, height)
-            patch.set_color(colors[i % len(colors)])
+            patch = mpatches.Rectangle((x_pos, y_pos), width, height, edgecolor='k')
+            patch.set_facecolor(colors[piece_obj.id % len(colors)])
             ax.add_patch(patch)
-    
-    def next_plot(event):
-        nonlocal index
-        if index < len(chromosome.array) - 1:
-            index += 1
-            ax.clear()
-            ax.set_title(f"Board {index + 1}")
-            plot_current(index)
-            fig.canvas.draw_idle()
 
-    def prev_plot(event):
-        nonlocal index
-        if index > 0:
-            index -= 1
-            ax.clear()
-            ax.set_title(f"Board {index + 1}")
-            plot_current(index)
-            fig.canvas.draw_idle()
+            ax.text(x_pos + width / 2, y_pos + height / 2, f'ID:{piece_obj.id}',
+                    ha='center', va='center', color='white', fontsize=8)
 
-    btn_prev = Button(axprev, 'Previous')
-    btn_prev.on_clicked(prev_plot)
+    # Turn off any unused subplots in the grid
+    for i in range(num_genes, len(axes)):
+        axes[i].axis('off')
 
-    btn_next = Button(axnext, 'Next')
-    btn_next.on_clicked(next_plot)
-
-    ax.set_title(f"Board {index + 1}")
-    plot_current(index)
-
+    plt.tight_layout(pad=3.0)  # Adds padding between plots
     plt.show()
 
-# pieces = [Piece(1, 10, 20), Piece(2, 20, 25), Piece(3, 20, 15), Piece(4, 10, 20), 
-        #   Piece(5, 15, 15), Piece(6, 20, 5)]
-# genes = [Gene(Piece(10, 100, 100), [(30, 30, pieces[1]), (50, 50, pieces[2])]), 
-        #  Gene(Piece(10, 100, 100), [(0, 0, pieces[0])]),
-        #  Gene(Piece(10, 100, 100), [(20, 20, pieces[3]), (60, 30, pieces[4]), (20, 40, pieces[5])])]
-# chromosome = Chromosome(genes)
-# visualise(chromosome)

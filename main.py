@@ -28,6 +28,7 @@ def input_data():
 
 
 def main():
+    seed(40)
     print("Inputing data...")
     input_data()
 
@@ -46,6 +47,7 @@ def main():
     # ga(population)
 
     visualise(population[0], stock_width, stock_height)
+    visualise(population[1], stock_width, stock_height)
 
 # ALGORITAM
 
