@@ -30,6 +30,9 @@ class Chromosome(object):
     def __init__(self, array):
         self.array = array
 
+    def evaluate(self):
+        return len(self.array)
+
     def print(self):
         print("Chromosome:")
         for e in self.array:

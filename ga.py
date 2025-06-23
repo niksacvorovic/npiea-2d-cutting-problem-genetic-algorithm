@@ -55,31 +55,8 @@ def check_chromosomes(constraints, chromosome):
 def change_rotation(chromosome):
     pass
 
-
+'''
 def swap_2_genes(chromosome):
-    pass
-
-
-def transfer_1_gene(chromosome):
-    pass
-
-def change_permutation(chromosome):
-    pass
-
-
-def mutation(chromosome):
-    ''''
-    Function chooses 2 genes in one chromosome. Then swaps random chosen piece from them.
-    Reorder the pieces in gene
-
-    :param chromosome: chromosome to mutate
-    :return: mutated chromosome
-    '''
-
-    # this is best possible scenario, no mutation needed
-    if len(chromosome.array) <= 1:
-        return
-
     # Picking 2 genes for mutation
     gene_id2 = gene_id1 = randint(0, len(chromosome.array) - 1)
     while gene_id1 == gene_id2:
@@ -87,28 +64,28 @@ def mutation(chromosome):
     g1 = chromosome.array[gene_id1]
     g2 = chromosome.array[gene_id2]
 
+    new_g1 = g1
+    neg_g2
 
-def ga(population):
-    '''
-    :param population: initial population (list of chromosomes)
-    :return:
-    '''
+    # id's for pieces to swap
+    id1 = randint(0, len(g1.pieces) - 1)
+    id2 = randint(0, len(g2.pieces) - 1)
+
+    g1.pieces[id1], g2.pieces[id2] = g2.pieces[id2], g1.pieces[id1]
+
+    b1 = make_new_positions(g1)
+    b2 = make_new_positions(g2)
+
+    if not b1 or not b2:
+'''
+
+
+def transfer_1_gene(chromosome):
     pass
+
+
+def change_permutation(chromosome):
     pass
-    pass
-
-def place_piece_on_position(board, r, c, width, height):
-    for i in range(height):
-        for j in range(width):
-            board[r + i][c + j] = True
-
-
-def can_place_on_position(board, r, c, width, height):
-    for i in range(height):
-        for j in range(width):
-            if r + i >= len(board) or c + j >= len(board[0]) or board[r + i][c + j]:
-                return False
-    return True
 
 
 def place_piece_on_board(board, piece, rot):
@@ -132,6 +109,98 @@ def place_piece_on_board(board, piece, rot):
                 return r, c
 
     return -1, -1
+
+
+def mutation(chromosome, stock_width, stock_height):
+    ''''
+    Function chooses 2 genes in one chromosome. Then swaps random chosen piece from them.
+    Reorder the pieces in gene
+
+    :param chromosome: chromosome to mutate
+    :return: mutated chromosome
+    '''
+
+    # this is best possible scenario, no mutation needed
+    if len(chromosome.array) <= 1:
+        return
+    # Picking 2 genes for mutation
+    gene_id2 = gene_id1 = randint(0, len(chromosome.array) - 1)
+    while gene_id1 == gene_id2:
+        gene_id2 = randint(0, len(chromosome.array) - 1)
+    g1 = chromosome.array[gene_id1]
+    g2 = chromosome.array[gene_id2]
+
+    pieces_from_2_genes = []
+    for tuple in g1.pieces:
+        pieces_from_2_genes.append(tuple[3])
+
+    for tuple in g2.pieces:
+        pieces_from_2_genes.append(tuple[3])
+
+    shuffled_pieces = pieces_from_2_genes[:]  # Create a shallow copy
+    # print("Shuffled pieces: ")
+    shuffle(shuffled_pieces)
+
+    genes = []
+    tuple_list = []
+    board = [[False for _ in range(stock_width)] for _ in range(stock_height)]
+
+    for piece in shuffled_pieces:
+        rotation = randint(0, 1)
+        r, c = place_piece_on_board(board, piece, rotation)
+
+        # transforming matrix indexing to 2-D axis indexing
+        x = c
+        y = r
+        # reset board, creating new gene
+        if x == -1 and y == -1:
+            genes.append(Gene(tuple_list))
+            tuple_list = []
+            board = [[False for _ in range(stock_width)] for _ in range(stock_height)]
+            x = y = 0
+            r = c = 0
+
+        tuple_list.append((x, y, rotation, piece))
+
+        width = piece.height if rotation else piece.width
+        height = piece.width if rotation else piece.height
+        place_piece_on_position(board, r, c, width, height)
+
+    genes.append(Gene(tuple_list))
+    # cant create 2 genes from shuffled pieces, nothing happens
+    if len(genes) > 2:
+        return
+    # from 2 genes, made 2 new genes
+    elif len(genes) == 2:
+        chromosome.array[gene_id1] = genes[0]
+        chromosome.array[gene_id2] = genes[1]
+    # from 2 genes, one is made
+    else:
+        chromosome.array[gene_id1] = genes[0]
+        # deleting unnecesery gene
+        del(chromosome.array[gene_id2])
+
+
+def ga(population):
+    '''
+    :param population: initial population (list of chromosomes)
+    :return:
+    '''
+    pass
+
+
+def place_piece_on_position(board, r, c, width, height):
+    for i in range(height):
+        for j in range(width):
+            board[r + i][c + j] = True
+
+
+def can_place_on_position(board, r, c, width, height):
+    for i in range(height):
+        for j in range(width):
+            if r + i >= len(board) or c + j >= len(board[0]) or board[r + i][c + j]:
+                return False
+    return True
 
 
 def make_chromosome_from_all_pieces(array, stock_width, stock_height):
