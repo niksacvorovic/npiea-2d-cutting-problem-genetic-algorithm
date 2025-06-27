@@ -16,6 +16,8 @@ def input_data(file_name):
     global pieces, piece_counts, stock_width, stock_height
     with open(file_name, 'r') as f:
         stock_height, stock_width = map(int, f.readline().split())
+        pieces = []
+        piece_counts = {}
 
         # Read the number of piece types
         q = int(f.readline())
@@ -40,7 +42,7 @@ def main():
     print(f"Processing file: {file_name}")
 
     print("Inputing data...")
-    input_data(file_name)
+    input_data()
 
     print("Generating population...")
     print("stock_width:", stock_width, " stock_height:", stock_height)
@@ -48,12 +50,13 @@ def main():
     population = create_init_population(pieces, piece_counts, stock_width, stock_height)
     print("Init population done!")
 
-    # ga(population)
+    for i in range(50):
+        ga(population, piece_counts)
 
 
     visualise(population[0], stock_width, stock_height)
 
-    for i in range(1000):
+    for i in range(50):
         mutation(population[0], stock_width, stock_height)
 
     visualise(population[0], stock_width, stock_height)

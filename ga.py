@@ -1,7 +1,7 @@
 from classes import *
 from random import *
 
-POPULATION_SIZE = 5
+POPULATION_SIZE = 100
 
 
 def one_point_crossover(first, second):
@@ -45,13 +45,6 @@ def check_chromosomes(constraints, chromosome):
             chromosome.array.pop(gene)
             return True
 
-# mislim da moze da ima 4 "dela"
-# 1) promena permutacije (bice drugaciji raspored piecova po tabli)
-# 2) swap izmedju 2 gena
-# 3) kao 2), ali u jednom smeru samo. Kao prebacivanje iz jednog gena u drugi
-# 4) promena rotacije pieca
-
-# ja sam mozda cak kontao da se na jednom genu, odradi x (2, 3, 10, nebitno) mutacije koje random izaberem od ovih 4.
 def change_rotation(chromosome):
     pass
 
@@ -189,12 +182,62 @@ def mutation(chromosome, stock_width, stock_height):
         del(chromosome.array[gene_id2])
 
 
-def ga(population):
-    '''
-    :param population: initial population (list of chromosomes)
-    :return:
-    '''
-    pass
+def roulette_selection(population, elite, deathcount):
+    rated = []
+    for p in population:
+        rated.append((p, len(p.array)))
+    rated = sorted(rated, key=lambda rated: rated[1])
+    # Prvih 20 najbolje sortiranih čuvamo za sledeću rundu
+    for_removal = rated[elite:]
+    for p in for_removal:
+        # Dodajemo nasumičnost u rangiranje populacije
+        p[1] *= random()
+    for_removal = sorted(for_removal, key=lambda r: r[1])
+    for i in range(deathcount):
+        population.pop(for_removal[-(i+1)][0])
+
+def tournament_selection(population, elite, lifecount, tour_size):
+    rated = []
+    for p in population:
+        rated.append((p, len(p.array)))
+    rated = sorted(rated, key=lambda rated: rated[1])
+    # Prvih 20 najbolje sortiranih čuvamo za sledeću rundu
+    for_removal = rated[elite:]
+    for i in range(lifecount - 20):
+        chosen = set()
+        tour_index = randrange(0, for_removal)
+        best = for_removal[tour_index]
+        chosen.add(tour_index)
+        for j in range(tour_size - 1):
+            while tour_index in chosen:
+                tour_index = randrange(0, for_removal)
+            current = for_removal[tour_index]
+            if current[1] > best[1]:
+                best = current
+        for_removal.pop(best)
+    for dead in for_removal:
+        population.pop(dead)
+    
+def ga(population, constraints):
+    offspring = []
+    for i in range(POPULATION_SIZE / 2):
+        first_index = randrange(0, len(population))
+        second_index = randrange(0, len(population))
+        while first_index == second_index:
+            second_index = randrange(0, len(population))
+        if random() > 0.5:
+            offspring.append(two_point_crossover(population[first_index], population[second_index]))
+        else:
+            offspring.append(one_point_crossover(population[first_index], population[second_index]))
+    deathcount = 0
+    for child in offspring:
+        if not check_chromosomes(constraints, child):
+            offspring.pop(child)
+            deathcount += 1
+    population.append(offspring)
+    for i in range(20):
+        mutation(population[randrange(0, len(population))])
+    roulette_selection(population, 20, POPULATION_SIZE - deathcount)
 
 
 def place_piece_on_position(board, r, c, width, height):
