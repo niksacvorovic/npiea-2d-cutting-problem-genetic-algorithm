@@ -1,19 +1,20 @@
 from ga import *
 from graphics import *
+import sys
 
-FILE_NAME = "./input/in1.txt"
+FILE_NAME = "./test_cases/in3.txt"
 stock_width = 0
 stock_height = 0
 pieces = []
 piece_counts = {}
 
-def input_data():
+def input_data(file_name):
     '''
     inputs test case from given file path FILE_NAME.
     :return:
     '''
     global pieces, piece_counts, stock_width, stock_height
-    with open(FILE_NAME, 'r') as f:
+    with open(file_name, 'r') as f:
         stock_height, stock_width = map(int, f.readline().split())
 
         # Read the number of piece types
@@ -28,9 +29,18 @@ def input_data():
 
 
 def main():
-    seed(54)
+    if len(sys.argv) < 2:
+        print("Error: Please provide a file path as an argument.")
+        print("Usage: python main.py <path_to_file>")
+        return  # Exit the function
+
+
+    file_name = sys.argv[1]
+
+    print(f"Processing file: {file_name}")
+
     print("Inputing data...")
-    input_data()
+    input_data(file_name)
 
     print("Generating population...")
     print("stock_width:", stock_width, " stock_height:", stock_height)
@@ -43,11 +53,10 @@ def main():
 
     visualise(population[0], stock_width, stock_height)
 
-    for i in range(50):
+    for i in range(1000):
         mutation(population[0], stock_width, stock_height)
 
-        visualise(population[0], stock_width, stock_height)
-
+    visualise(population[0], stock_width, stock_height)
 
 '''
 The GA Main Loop Begins Here:
@@ -73,10 +82,11 @@ e. Termination Check: Check if you have reached a termination condition (e.g., m
 # fitness_function  MOZDA NAM NE TREBA                                                              NIKSA
 
 
-# mutacija (prima chromosomm, vraca mutirani chromosome)                 VEDRAN
+# mutacija (prima chromosomm, vraca mutirani chromosome)       uradjeno  VEDRAN
 # input piecova + velicina table                               uradjeno  VEDRAN
 # create_init_population                                       uradjeno  VEDRAN
 # natural_selection (80-20, nesto, treba uzimati i malo losih hromozoma) VEDRAN
 
 if __name__ == "__main__":
+    seed(54)
     main()

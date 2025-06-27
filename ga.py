@@ -123,6 +123,7 @@ def mutation(chromosome, stock_width, stock_height):
     # this is best possible scenario, no mutation needed
     if len(chromosome.array) <= 1:
         return
+
     # Picking 2 genes for mutation
     gene_id2 = gene_id1 = randint(0, len(chromosome.array) - 1)
     while gene_id1 == gene_id2:
@@ -138,7 +139,6 @@ def mutation(chromosome, stock_width, stock_height):
         pieces_from_2_genes.append(tuple[3])
 
     shuffled_pieces = pieces_from_2_genes[:]  # Create a shallow copy
-    # print("Shuffled pieces: ")
     shuffle(shuffled_pieces)
 
     genes = []
@@ -159,6 +159,14 @@ def mutation(chromosome, stock_width, stock_height):
             board = [[False for _ in range(stock_width)] for _ in range(stock_height)]
             x = y = 0
             r = c = 0
+            # convert dimension if piece was initaly rotated
+            width = piece.height if rotation else piece.width
+            height = piece.width if rotation else piece.height
+
+            # piece must be rotated, cant fit in inital dimension
+            if width > stock_width or height > stock_height:
+                rotation = 1 - rotation
+                #print("rotiram jer moram")
 
         tuple_list.append((x, y, rotation, piece))
 
@@ -190,6 +198,7 @@ def ga(population):
 
 
 def place_piece_on_position(board, r, c, width, height):
+    #print("Placing : ", width, " ", height, " on position ", r, ", ", c)
     for i in range(height):
         for j in range(width):
             board[r + i][c + j] = True
@@ -230,10 +239,20 @@ def make_chromosome_from_all_pieces(array, stock_width, stock_height):
             x = y = 0
             r = c = 0
 
+            # convert dimension if piece was initaly rotated
+            width = piece.height if rotation else piece.width
+            height = piece.width if rotation else piece.height
+
+            # piece must be rotated, cant fit in inital dimension
+            if width > stock_width or height > stock_height:
+                rotation = 1-rotation
+                #print("rotiram jer moram")
+
         tuple_list.append((x, y, rotation, piece))
 
         width = piece.height if rotation else piece.width
         height = piece.width if rotation else piece.height
+
         place_piece_on_position(board, r, c, width, height)
 
 
