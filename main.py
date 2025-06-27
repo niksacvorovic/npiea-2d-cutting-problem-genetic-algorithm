@@ -54,7 +54,7 @@ def main():
 
     visualise(population[0], stock_width, stock_height)
 
-    for i in range(500):
+    for i in range(2000):
         ga(population, piece_counts, stock_width, stock_height)
 
 

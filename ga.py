@@ -4,7 +4,6 @@ import math
 
 POPULATION_SIZE = 100
 
-
 def one_point_crossover(first, second):
     index = randrange(0, min(len(first.array), len(second.array)))
     first_child = Chromosome(first.array[:index] + second.array[index:])
@@ -204,37 +203,41 @@ def tournament_selection(population, elite, lifecount, tour_size):
     for p in population:
         rated.append((p, len(p.array)))
     rated = sorted(rated, key=lambda rated: rated[1])
-    # Prvih 20 najbolje sortiranih čuvamo za sledeću rundu
+    # Prvih elite najbolje sortiranih čuvamo za sledeću rundu
+    fittest = []
+    for i in range(elite):
+        fittest.append(rated[i][0])
     for_removal = rated[elite:]
-    for i in range(lifecount - 20):
+    for i in range(lifecount - elite):
         chosen = set()
-        tour_index = randrange(0, for_removal)
+        tour_index = randrange(0, len(for_removal))
         best = for_removal[tour_index]
         chosen.add(tour_index)
         for j in range(tour_size - 1):
             while tour_index in chosen:
-                tour_index = randrange(0, for_removal)
+                tour_index = randrange(0, len(for_removal))
             current = for_removal[tour_index]
             if current[1] > best[1]:
                 best = current
         for_removal.remove(best)
-    for dead in for_removal:
-        population.remove(dead)
+        fittest.append(best[0])
+    return fittest
     
 def ga(population, constraints, stock_width, stock_height):
+    fittest = tournament_selection(population, 20, int(POPULATION_SIZE / 2), 3)
     offspring = []
     for i in range(math.floor(POPULATION_SIZE / 2)):
-        first_index = randrange(0, len(population))
-        second_index = randrange(0, len(population))
+        first_index = randrange(0, len(fittest))
+        second_index = randrange(0, len(fittest))
         while first_index == second_index:
-            second_index = randrange(0, len(population))
+            second_index = randrange(0, len(fittest))
 
         if random() > 0.5:
-            ttuple = two_point_crossover(population[first_index], population[second_index])
+            ttuple = two_point_crossover(fittest[first_index], fittest[second_index])
             offspring.append(ttuple[0])
             offspring.append(ttuple[1])
         else:
-            ttuple = one_point_crossover(population[first_index], population[second_index])
+            ttuple = one_point_crossover(fittest[first_index], fittest[second_index])
             offspring.append(ttuple[0])
             offspring.append(ttuple[1])
 
