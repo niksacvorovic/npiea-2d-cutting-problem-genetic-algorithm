@@ -1,21 +1,22 @@
 from classes import *
 from random import *
+import math
 
 POPULATION_SIZE = 100
 
 
 def one_point_crossover(first, second):
-    index = randrange(0, min(len(first.pieces), len(second.pieces)))
+    index = randrange(0, min(len(first.array), len(second.array)))
     first_child = Chromosome(first.array[:index] + second.array[index:])
     second_child = Chromosome(second.array[:index] + first.array[index:])
     return first_child, second_child
 
 
 def two_point_crossover(first, second):
-    first_index = randrange(0, min(len(first.pieces), len(second.pieces)))
-    second_index = randrange(0, min(len(first.pieces), len(second.pieces)))
+    first_index = randrange(0, min(len(first.array), len(second.array)))
+    second_index = randrange(0, min(len(first.array), len(second.array)))
     while first_index == second_index:
-        second_index = randrange(0, min(len(first.pieces), len(second.pieces)))
+        second_index = randrange(0, min(len(first.array), len(second.array)))
     a = min(first_index, second_index)
     b = max(first_index, second_index)
     first_child = Chromosome(first.array[:a] + second.array[a:b] + first.array[b:])
@@ -40,7 +41,7 @@ def check_chromosomes(constraints, chromosome):
             return False
     if noexcess:
         return True
-    for gene in chromosome:
+    for gene in chromosome.array:
         if excess == gene.count:
             chromosome.array.pop(gene)
             return True
@@ -185,16 +186,18 @@ def mutation(chromosome, stock_width, stock_height):
 def roulette_selection(population, elite, deathcount):
     rated = []
     for p in population:
-        rated.append((p, len(p.array)))
+        rated.append([p, len(p.array)])
+
     rated = sorted(rated, key=lambda rated: rated[1])
     # Prvih 20 najbolje sortiranih čuvamo za sledeću rundu
     for_removal = rated[elite:]
     for p in for_removal:
         # Dodajemo nasumičnost u rangiranje populacije
         p[1] *= random()
+
     for_removal = sorted(for_removal, key=lambda r: r[1])
     for i in range(deathcount):
-        population.pop(for_removal[-(i+1)][0])
+        population.remove(for_removal[-(i+1)][0])
 
 def tournament_selection(population, elite, lifecount, tour_size):
     rated = []
@@ -214,29 +217,37 @@ def tournament_selection(population, elite, lifecount, tour_size):
             current = for_removal[tour_index]
             if current[1] > best[1]:
                 best = current
-        for_removal.pop(best)
+        for_removal.remove(best)
     for dead in for_removal:
-        population.pop(dead)
+        population.remove(dead)
     
-def ga(population, constraints):
+def ga(population, constraints, stock_width, stock_height):
     offspring = []
-    for i in range(POPULATION_SIZE / 2):
+    for i in range(math.floor(POPULATION_SIZE / 2)):
         first_index = randrange(0, len(population))
         second_index = randrange(0, len(population))
         while first_index == second_index:
             second_index = randrange(0, len(population))
+
         if random() > 0.5:
-            offspring.append(two_point_crossover(population[first_index], population[second_index]))
+            ttuple = two_point_crossover(population[first_index], population[second_index])
+            offspring.append(ttuple[0])
+            offspring.append(ttuple[1])
         else:
-            offspring.append(one_point_crossover(population[first_index], population[second_index]))
+            ttuple = one_point_crossover(population[first_index], population[second_index])
+            offspring.append(ttuple[0])
+            offspring.append(ttuple[1])
+
     deathcount = 0
+
     for child in offspring:
         if not check_chromosomes(constraints, child):
-            offspring.pop(child)
+            offspring.remove(child)
             deathcount += 1
-    population.append(offspring)
+
+    population = population + offspring
     for i in range(20):
-        mutation(population[randrange(0, len(population))])
+        mutation(population[randrange(0, len(population))], stock_width, stock_height)
     roulette_selection(population, 20, POPULATION_SIZE - deathcount)
 
 
