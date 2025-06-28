@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import math
+from numpy import array
 
 def visualise(chromosome, stock_width, stock_height):
     """
@@ -21,7 +22,7 @@ def visualise(chromosome, stock_width, stock_height):
 
     # If there's only one plot, axes is not an array, so make it one
     if num_genes == 1:
-        axes = [[axes]]
+        axes = array([axes])
 
     # Flatten the axes array to make it easy to iterate over
     axes = axes.flatten()

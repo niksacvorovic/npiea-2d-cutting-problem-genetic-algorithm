@@ -1,13 +1,14 @@
 from ga import *
 from graphics import *
+from time import perf_counter
 import sys
 
-FILE_NAME = "./test_cases/in2.txt"
+FILE_NAME = "./test_cases/in3.txt"
 stock_width = 0
 stock_height = 0
 pieces = []
 piece_counts = {}
-testing = 1
+testing = 0
 
 def input_data(file_name):
     '''
@@ -54,11 +55,15 @@ def main():
 
     visualise(population[0], stock_width, stock_height)
 
-    for i in range(200):
+    start = perf_counter()
+    iter = 0
+    while perf_counter() - start < 20:
         ga(population, piece_counts, stock_width, stock_height)
+        iter += 1
 
 
     visualise(population[0], stock_width, stock_height)
+    print(f"Generation count: {iter}")
 
 if __name__ == "__main__":
     seed(54)
