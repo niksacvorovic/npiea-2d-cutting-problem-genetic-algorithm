@@ -12,6 +12,9 @@ def one_point_crossover(first, second):
 
 
 def two_point_crossover(first, second):
+    if len(first.array) <= 1 or len(second.array) <= 1:
+        return first, second
+
     first_index = randrange(0, min(len(first.array), len(second.array)))
     second_index = randrange(0, min(len(first.array), len(second.array)))
     while first_index == second_index:
@@ -44,41 +47,6 @@ def check_chromosomes(constraints, chromosome):
         if excess == gene.count:
             chromosome.array.pop(gene)
             return True
-
-def change_rotation(chromosome):
-    pass
-
-'''
-def swap_2_genes(chromosome):
-    # Picking 2 genes for mutation
-    gene_id2 = gene_id1 = randint(0, len(chromosome.array) - 1)
-    while gene_id1 == gene_id2:
-        gene_id2 = randint(0, len(chromosome.array) - 1)
-    g1 = chromosome.array[gene_id1]
-    g2 = chromosome.array[gene_id2]
-
-    new_g1 = g1
-    neg_g2
-
-    # id's for pieces to swap
-    id1 = randint(0, len(g1.pieces) - 1)
-    id2 = randint(0, len(g2.pieces) - 1)
-
-    g1.pieces[id1], g2.pieces[id2] = g2.pieces[id2], g1.pieces[id1]
-
-    b1 = make_new_positions(g1)
-    b2 = make_new_positions(g2)
-
-    if not b1 or not b2:
-'''
-
-
-def transfer_1_gene(chromosome):
-    pass
-
-
-def change_permutation(chromosome):
-    pass
 
 
 def place_piece_on_board(board, piece, rot):
@@ -117,10 +85,29 @@ def mutation(chromosome, stock_width, stock_height):
     if len(chromosome.array) <= 1:
         return
 
+    list_pairs = []
+    # try to pick 2 genes with smalles area occupied
+    for i in range(len(chromosome.array)):
+        area = 0
+        g = chromosome.array[i]
+        for p in g.pieces:
+            area += p[3].width * p[3].height
+
+        list_pairs.append((area, i))
+
+    # sorting list
+    list_pairs.sort(key=lambda x: x[0])
+    # rounding to higher
+    ende = math.ceil(len(chromosome.array)/2)
+
+    if len(chromosome.array) <= 3:
+        ende = len(chromosome.array)
+
     # Picking 2 genes for mutation
-    gene_id2 = gene_id1 = randint(0, len(chromosome.array) - 1)
+    gene_id2 = gene_id1 = list_pairs[randint(0, ende - 1)][1]
     while gene_id1 == gene_id2:
-        gene_id2 = randint(0, len(chromosome.array) - 1)
+        gene_id2 = list_pairs[randint(0, ende - 1)][1]
+
     g1 = chromosome.array[gene_id1]
     g2 = chromosome.array[gene_id2]
 
@@ -198,6 +185,7 @@ def roulette_selection(population, elite, deathcount):
     for i in range(deathcount):
         population.remove(for_removal[-(i+1)][0])
 
+
 def tournament_selection(population, elite, lifecount, tour_size):
     rated = []
     for p in population:
@@ -222,9 +210,11 @@ def tournament_selection(population, elite, lifecount, tour_size):
         for_removal.remove(best)
         fittest.append(best[0])
     return fittest
-    
+
+
 def ga(population, constraints, stock_width, stock_height):
     fittest = tournament_selection(population, 20, int(POPULATION_SIZE / 2), 3)
+    #print("Fittest: ", len(fittest))
     offspring = []
     for i in range(math.floor(POPULATION_SIZE / 2)):
         first_index = randrange(0, len(fittest))
@@ -248,9 +238,15 @@ def ga(population, constraints, stock_width, stock_height):
             offspring.remove(child)
             deathcount += 1
 
-    population = population + offspring
-    for i in range(20):
-        mutation(population[randrange(0, len(population))], stock_width, stock_height)
+
+    #population = population + offspring
+    population = fittest + offspring
+    #print("Population: ", len(population))
+    #print()
+    #for i in range(20):
+    #    mutation(population[randrange(0, len(population))], stock_width, stock_height)
+    for c in population:
+        mutation(c, stock_width, stock_height)
     roulette_selection(population, 20, POPULATION_SIZE - deathcount)
 
 
