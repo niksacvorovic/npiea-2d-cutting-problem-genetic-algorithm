@@ -45,7 +45,7 @@ def check_chromosomes(constraints, chromosome):
         return True
     for gene in chromosome.array:
         if excess == gene.count:
-            chromosome.array.pop(gene)
+            chromosome.array.remove(gene)
             return True
 
 

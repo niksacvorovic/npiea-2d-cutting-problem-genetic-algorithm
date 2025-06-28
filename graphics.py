@@ -21,7 +21,7 @@ def visualise(chromosome, stock_width, stock_height):
 
     # If there's only one plot, axes is not an array, so make it one
     if num_genes == 1:
-        axes = [axes]
+        axes = [[axes]]
 
     # Flatten the axes array to make it easy to iterate over
     axes = axes.flatten()
