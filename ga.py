@@ -240,7 +240,7 @@ def ga(population, constraints, stock_width, stock_height):
 
 
     population = population + offspring
-    for i in range(50):
+    for i in range(10):
        mutation(population[randrange(0, len(population))], stock_width, stock_height)
     roulette_selection(population, 20, POPULATION_SIZE - deathcount)
 

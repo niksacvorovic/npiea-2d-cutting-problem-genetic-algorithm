@@ -61,7 +61,7 @@ def main():
         ga(population, piece_counts, stock_width, stock_height)
         iter += 1
 
-
+    population = sorted(population, key=lambda c: len(c.array))
     visualise(population[0], stock_width, stock_height)
     print(f"Generation count: {iter}")
 
