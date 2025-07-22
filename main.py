@@ -8,7 +8,7 @@ stock_width = 0
 stock_height = 0
 pieces = []
 piece_counts = {}
-testing = 0
+testing = 1
 
 def input_data(file_name):
     '''
